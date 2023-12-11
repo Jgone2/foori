@@ -1,10 +1,10 @@
-package com.foriserver.fori.common.pattern.customValidation;
+package com.foriserver.fori.common.pattern.customValidation.member;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.regex.Pattern;
 
-import com.foriserver.fori.common.pattern.custom.Password;
+import com.foriserver.fori.common.pattern.custom.member.Password;
 
 public class PasswordValidator implements ConstraintValidator<Password, String> {
 
@@ -32,17 +32,29 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null) return false;
+        if (value == null) {
+            return false;
+        }
 
         int length = value.length();
         boolean patternMatch = PASSWORD_PATTERN.matcher(value).matches();
-        boolean validMatch = length >= minLength && length <= maxLength && patternMatch;
 
-        if (!validMatch) {
-            context.disableDefaultConstraintViolation();  // 기본 제약 조건을 비활성화.
-            context.buildConstraintViolationWithTemplate(validMatch ? "" : lengthMessage).addConstraintViolation(); // 만약 길이 조건을 충족하지 않았다면 lengthMessage를 출력.
-            context.buildConstraintViolationWithTemplate(validMatch ? "" : patternMessage).addConstraintViolation(); // 만약 패턴 조건을 충족하지 않았다면 patternMessage를 출력.
+        if (length < minLength || length > maxLength || !patternMatch) {
+            context.disableDefaultConstraintViolation(); // 기본 제약 조건을 비활성화.
+
+            // 만약 길이 조건을 충족하지 않았다면 lengthMessage를 출력.
+            if (length < minLength) {
+                context.buildConstraintViolationWithTemplate(lengthMessage).addConstraintViolation();
+            }
+
+            // 만약 길이 조건을 충족하지 않았다면 patternMessage를 출력.
+            if (!patternMatch) {
+                context.buildConstraintViolationWithTemplate(patternMessage).addConstraintViolation();
+            }
+
+            return false;
         }
-        return validMatch;
+
+        return true;
     }
 }
