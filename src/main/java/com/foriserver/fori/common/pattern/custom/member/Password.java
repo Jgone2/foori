@@ -1,6 +1,6 @@
-package com.foriserver.fori.common.pattern.custom;
+package com.foriserver.fori.common.pattern.custom.member;
 
-import com.foriserver.fori.common.pattern.customValidation.PasswordValidator;
+import com.foriserver.fori.common.pattern.customValidation.member.PasswordValidator;
 import javax.validation.Constraint;
 
 import java.lang.annotation.*;

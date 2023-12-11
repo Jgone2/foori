@@ -1,6 +1,6 @@
-package com.foriserver.fori.common.pattern.custom;
+package com.foriserver.fori.common.pattern.custom.member;
 
-import com.foriserver.fori.common.pattern.customValidation.LoginIdValidator;
+import com.foriserver.fori.common.pattern.customValidation.member.LoginIdValidator;
 
 import javax.validation.Constraint;
 import java.lang.annotation.Documented;
