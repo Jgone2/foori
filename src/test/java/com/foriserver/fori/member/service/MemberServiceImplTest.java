@@ -32,8 +32,8 @@ class MemberServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        hong = new Member(1L, "홍길동", "hong123", "a123456!", "hong123@test.com");
-        kim = new Member(2L, "김철수", "kim12", "a123456", "kim123@test");
+        hong = new Member(1L, "홍길동", "hong123", "a123456!", 20010101, "hong123@test.com", "010-1234-5678");
+        kim = new Member(2L, "김철수", "kim12", "a123456", 20110703, "kim123@test", "012-345-6789");
     }
 
     @Test
@@ -48,7 +48,9 @@ class MemberServiceImplTest {
         assertEquals(savedmember.getName(), hong.getName());
         assertEquals(savedmember.getLoginId(), hong.getLoginId());
         assertEquals(savedmember.getPassword(), hong.getPassword());
+        assertEquals(savedmember.getBirth(), hong.getBirth());
         assertEquals(savedmember.getEmail(), hong.getEmail());
+        assertEquals(savedmember.getPhoneNum(), hong.getPhoneNum());
     }
 
     @Test
@@ -65,6 +67,8 @@ class MemberServiceImplTest {
         assertEquals(savedMember.getName(), findMember.getName());
         assertEquals(savedMember.getLoginId(), findMember.getLoginId());
         assertEquals(savedMember.getPassword(), findMember.getPassword());
+        assertEquals(savedMember.getBirth(), findMember.getBirth());
+        assertThat(savedMember.getPhoneNum()).isEqualTo(findMember.getPhoneNum());
         assertEquals(savedMember.getMemberId(), findMember.getMemberId());
     }
 
@@ -82,6 +86,27 @@ class MemberServiceImplTest {
         assertEquals(savedMember.getName(), findMember.getName());
         assertEquals(savedMember.getEmail(), findMember.getEmail());
         assertEquals(savedMember.getPassword(), findMember.getPassword());
+        assertEquals(savedMember.getBirth(), findMember.getBirth());
+        assertEquals(savedMember.getPhoneNum(), findMember.getPhoneNum());
+        assertEquals(savedMember.getMemberId(), findMember.getMemberId());
+    }
+
+    @Test
+    @DisplayName("회원 조회(전화번호)")
+    void findMemberByPhoneNum() {
+        // 생성된 인스턴스의 정보로 회원 생성 후 savedMember에 저장
+        Member savedMember = memberService.createMember(hong);
+
+        // 생성된 회원의 전화번호로 조회
+        Member findMember = memberService.findMemberByPhoneNum(savedMember.getPhoneNum());
+
+        // Verify
+        assertEquals(savedMember.getPhoneNum(), findMember.getPhoneNum());
+        assertEquals(savedMember.getName(), findMember.getName());
+        assertEquals(savedMember.getEmail(), findMember.getEmail());
+        assertEquals(savedMember.getPassword(), findMember.getPassword());
+        assertEquals(savedMember.getBirth(), findMember.getBirth());
+        assertEquals(savedMember.getLoginId(), findMember.getLoginId());
         assertEquals(savedMember.getMemberId(), findMember.getMemberId());
     }
 
@@ -106,7 +131,7 @@ class MemberServiceImplTest {
         Member savedMember = memberService.createMember(hong);
 
         // 생성된 회원의 로그인 아이디로 조회
-        Member findMember = memberService.findMemberByLoginId(savedMember.getLoginId());
+        Member findMember = memberService.findMemberByPhoneNum(savedMember.getPhoneNum());
 
         // 수정
         findMember.setName("김홍철");
@@ -127,7 +152,7 @@ class MemberServiceImplTest {
         Member savedMember = memberService.createMember(hong);
 
         // 생성된 회원의 로그인 아이디로 조회
-        Member findMember = memberService.findMemberByLoginId(savedMember.getLoginId());
+        Member findMember = memberService.findMemberByPhoneNum(savedMember.getPhoneNum());
 
         // 변경할 비밀번호
         String newPassword = "a73210!";
@@ -147,7 +172,7 @@ class MemberServiceImplTest {
         Member savedMember = memberService.createMember(hong);
 
         // 생성된 회원의 로그인 아이디로 조회
-        Member findMember = memberService.findMemberByLoginId(savedMember.getLoginId());
+        Member findMember = memberService.findMemberByPhoneNum(savedMember.getPhoneNum());
 
         // 삭제
         memberService.deleteMember(findMember, savedMember.getPassword());
