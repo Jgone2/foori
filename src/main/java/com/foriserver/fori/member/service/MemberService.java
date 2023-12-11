@@ -12,6 +12,7 @@ public interface MemberService {
     // 회원 조회
     Member findMemberByEmail(String email);
     Member findMemberByLoginId(String loginId);
+    Member findMemberByPhoneNum(String phoneNum);
 
     // 회원 전체 조회
     List<Member> findMembers();

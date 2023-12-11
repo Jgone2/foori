@@ -1,10 +1,9 @@
 package com.foriserver.fori.member.dto;
 
-import jakarta.validation.constraints.Pattern;
+import com.foriserver.fori.common.pattern.custom.member.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
 
@@ -14,12 +13,9 @@ public class MemberDto {
     @AllArgsConstructor
     public static class Login {
 
-        @Pattern(regexp = "^[A-Za-z0-9]+$", message = "아이디는 영문 대소문자와 숫자만 가능합니다.")
-        @Length(min = 6, max = 15, message = "아이디는 6~15자 사이여야 합니다.")
+        @LoginId
         private String loginId;
-        @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()])[a-z0-9!@#$%^&*()]+$",
-                message = "비밀번호는 영문 소문자와 숫자, 키패드 1~0까지의 특수문자만 가능하며 각각 한 글자 이상이 포함되어야 합니다.")
-        @Length(min = 8, max = 25, message = "비밀번호는 8~25자 사이여야 합니다.")
+        @Password
         private String password;
     }
 
@@ -27,39 +23,38 @@ public class MemberDto {
     @AllArgsConstructor
     public static class Post {
 
-        @Length(min = 1, max = 20, message = "이름은 1~20자 사이여야 합니다.")
+        @Name
         private String name;
-        @Pattern(regexp = "^[A-Za-z0-9]+$", message = "아이디는 영문 대소문자와 숫자만 가능합니다.")
-        @Length(min = 6, max = 15, message = "아이디는 6~15자 사이여야 합니다.")
+        @LoginId
         private String loginId;
-        @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()])[a-z0-9!@#$%^&*()]+$",
-                message = "비밀번호는 영문 소문자와 숫자, 키패드 1~0까지의 특수문자만 가능하며 각각 한 글자 이상이 포함되어야 합니다.")
-        @Length(min = 8, max = 25, message = "비밀번호는 8~25자 사이여야 합니다.")
+        @Password
         private String password;
-        @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$", message = "이메일 형식이 올바르지 않습니다.")
+        @Birth
+        private int birth;
+        @Email
         private String email;
+        @PhoneNum
+        private String phoneNum;
     }
 
     @Getter
     @AllArgsConstructor
     public static class Patch {
 
-        @Length(min = 1, max = 20)
+        @Name
         private String name;
-        @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()])[a-z0-9!@#$%^&*()]+$",
-                message = "비밀번호는 영문 소문자와 숫자, 키패드 1~0까지의 특수문자만 가능하며 각각 한 글자 이상이 포함되어야 합니다.")
-        @Length(min = 8, max = 25, message = "비밀번호는 8~25자 사이여야 합니다.")
+        @Password
         private String password;
-        @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$", message = "이메일 형식이 올바르지 않습니다.")
+        @Email
         private String email;
+        @PhoneNum
+        private String phoneNum;
     }
 
     @Getter
     @AllArgsConstructor
     public static class CheckPassword {
-        @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()])[a-z0-9!@#$%^&*()]+$",
-                message = "비밀번호는 영문 소문자와 숫자, 키패드 1~0까지의 특수문자만 가능하며 각각 한 글자 이상이 포함되어야 합니다.")
-        @Length(min = 8, max = 25, message = "비밀번호는 8~25자 사이여야 합니다.")
+        @Password
         private String password;
     }
 
@@ -68,17 +63,18 @@ public class MemberDto {
     @NoArgsConstructor
     public abstract static class MemberResponse {
         private Long memberId;
-        @Length(min = 1, max = 20, message = "이름은 1~20자 사이여야 합니다.")
+        @Name
         private String name;
-        @Pattern(regexp = "^[A-Za-z0-9]+$", message = "아이디는 영문 대소문자와 숫자만 가능합니다.")
-        @Length(min = 6, max = 15, message = "아이디는 6~15자 사이여야 합니다.")
+        @LoginId
         private String loginId;
-        @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()])[a-z0-9!@#$%^&*()]+$",
-                message = "비밀번호는 영문 소문자와 숫자, 키패드 1~0까지의 특수문자만 가능하며 각각 한 글자 이상이 포함되어야 합니다.")
-        @Length(min = 8, max = 25, message = "비밀번호는 8~25자 사이여야 합니다.")
+        @Password
         private String password;
-        @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$", message = "이메일 형식이 올바르지 않습니다.")
+        @Birth
+        private int birth;
+        @Email
         private String email;
+        @PhoneNum
+        private String phoneNum;
     }
     @Getter
     @NoArgsConstructor
@@ -86,8 +82,8 @@ public class MemberDto {
     public static class MemberPostResponse extends MemberResponse {
         private LocalDateTime createdAt;
 
-        public MemberPostResponse(Long memberId, String name, String loginId, String password, String email, LocalDateTime createdAt) {
-            super(memberId, name, loginId, password, email);
+        public MemberPostResponse(Long memberId, String name, String loginId, String password, int birth, String email, String phoneNum, LocalDateTime createdAt) {
+            super(memberId, name, loginId, password, birth, email, phoneNum);
             this.createdAt = createdAt;
         }
     }
@@ -98,8 +94,8 @@ public class MemberDto {
     public static class MemberPatchResponse extends MemberResponse {
         private LocalDateTime modifiedAt;
 
-        public MemberPatchResponse(Long memberId, String name, String loginId, String password, String email, LocalDateTime modifiedAt) {
-            super(memberId, name, loginId, password, email);
+        public MemberPatchResponse(Long memberId, String name, String loginId, String password, int birth, String email, String phoneNum, LocalDateTime modifiedAt) {
+            super(memberId, name, loginId, password, birth, email, phoneNum);
             this.modifiedAt = modifiedAt;
         }
     }

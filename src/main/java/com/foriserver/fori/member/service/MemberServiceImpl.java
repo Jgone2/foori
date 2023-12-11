@@ -27,6 +27,7 @@ public class MemberServiceImpl implements MemberService {
         // 중복 체크(로그인 아이디, 이메일)
         verifyExistsLoginId(member.getLoginId());
         verifyExistsEmail(member.getEmail());
+        verifyExistsPhoneNum(member.getPhoneNum());
 
         // 비밀번호 암호화
         String encryptedPassword = passwordEncoder.encode(member.getPassword());
@@ -49,6 +50,12 @@ public class MemberServiceImpl implements MemberService {
         return findVerifyMemberByLoginId(loginId);
     }
 
+    // 회원 조회(전화번호)
+    @Override
+    public Member findMemberByPhoneNum(String phoneNum) {
+        return findVerifyMemberByPhoneNum(phoneNum);
+    }
+
     // 회원 전체 조회
     @Override
     public List<Member> findMembers() {
@@ -67,18 +74,19 @@ public class MemberServiceImpl implements MemberService {
         // 변경할 정보 저장
         findMember.setName(member.getName());
         findMember.setEmail(member.getEmail());
+        findMember.setPhoneNum(member.getPhoneNum());
 
         // 변경된 정보 저장
         Member updatedMember = memberRepository.save(findMember);
 
-        log.info("{}님의 정보가 수정되었습니다. 수정된 정보: 이름={}, 이메일={}", findMember.getName(), updatedMember.getName(), updatedMember.getEmail());
+        log.info("{}님의 정보가 수정되었습니다. 수정된 정보: 이름={}, 이메일={}, 전화번호={}", findMember.getName(), updatedMember.getName(), updatedMember.getEmail(), updatedMember.getPhoneNum());
         return updatedMember;
     }
 
     // 회원 비밀번호 변경
     @Override
     public Member updateMemberPassword(Member member, String password) {
-        Member findMember = findVerifyMemberByLoginId(member.getLoginId());
+        Member findMember = findVerifyMemberByPhoneNum(member.getPhoneNum());
         // 변경할 비밀번호 암호화
         String encryptedPassword = passwordEncoder.encode(password);
         // 새로운 비밀번호와 이전 비밀번호가 같으면 변경하지 않음
@@ -120,6 +128,13 @@ public class MemberServiceImpl implements MemberService {
         });
     }
 
+    private void verifyExistsPhoneNum(String phoneNum) {
+        memberRepository.findByPhoneNum(phoneNum)
+                .ifPresent(member -> {
+            throw new RuntimeException(ExceptionCode.MEMBER_PHONE_NUM_EXISTS.getMessage());
+        });
+    }
+
     private Member findVerifyMemberByLoginId(String loginId) {
         return memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> {
@@ -129,6 +144,13 @@ public class MemberServiceImpl implements MemberService {
 
     private Member findVerifyMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
+                .orElseThrow(() -> {
+            throw new RuntimeException(ExceptionCode.MEMBER_NOT_FOUND.getMessage());
+        });
+    }
+
+    private Member findVerifyMemberByPhoneNum(String phoneNum) {
+        return memberRepository.findByPhoneNum(phoneNum)
                 .orElseThrow(() -> {
             throw new RuntimeException(ExceptionCode.MEMBER_NOT_FOUND.getMessage());
         });

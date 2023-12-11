@@ -9,6 +9,9 @@ public interface MemberMapper {
     Member memberPostDtoToMember(MemberDto.Post memberPostDto);
     Member memberPatchDtoToMember(MemberDto.Patch memberPatchDto);
 
+    // Login
+    MemberDto.Login memberToLoginDto(Member member);
+
     // Check
     MemberDto.CheckPassword checkPasswordToMember(MemberDto.CheckPassword checkPasswordDto);
 
