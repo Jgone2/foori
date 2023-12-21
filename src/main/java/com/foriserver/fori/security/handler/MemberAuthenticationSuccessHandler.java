@@ -1,8 +1,7 @@
 package com.foriserver.fori.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foriserver.fori.security.auth.service.ForiMemberDetailsService;
-import jakarta.servlet.FilterChain;
+import com.foriserver.fori.security.auth.service.FooriMemberDetailsService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,7 +21,7 @@ public class MemberAuthenticationSuccessHandler implements AuthenticationSuccess
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-        ForiMemberDetailsService.ForiMemberDetails memberDetails = (ForiMemberDetailsService.ForiMemberDetails) authentication.getPrincipal();
+        FooriMemberDetailsService.FooriMemberDetails memberDetails = (FooriMemberDetailsService.FooriMemberDetails) authentication.getPrincipal();
         Long memberId = memberDetails.getMemberId();
         String loginId = memberDetails.getLoginId();
         String email = memberDetails.getEmail();
