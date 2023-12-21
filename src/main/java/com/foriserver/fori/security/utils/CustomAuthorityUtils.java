@@ -17,5 +17,13 @@ public class CustomAuthorityUtils {
 
 
     public Collection<? extends GrantedAuthority> createAuthorities(List<MemberRoles> roles) {
+
+        if (roles.contains(MemberRoles.ADMIN)) {
+            return ADMIN_ROLES;
+        } else if (roles.contains(MemberRoles.STORE_ADMIN)) {
+            return STORE_ADMIN_ROLES;
+        } else {
+            return MEMBER_ROLES;
+        }
     }
 }

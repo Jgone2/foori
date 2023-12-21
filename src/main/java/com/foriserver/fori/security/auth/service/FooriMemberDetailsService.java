@@ -1,6 +1,6 @@
 package com.foriserver.fori.security.auth.service;
 
-import com.foriserver.fori.common.exception.ExceptionCode;
+import com.foriserver.fori.common.exception.CodeEnum.ExceptionCode;
 import com.foriserver.fori.member.entity.Member;
 import com.foriserver.fori.member.repository.MemberRepository;
 import com.foriserver.fori.security.utils.CustomAuthorityUtils;
@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class ForiMemberDetailsService implements UserDetailsService {
+public class FooriMemberDetailsService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
     private final CustomAuthorityUtils authorityUtils;
@@ -28,19 +28,18 @@ public class ForiMemberDetailsService implements UserDetailsService {
         Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
         Member findMember = optionalMember.orElseThrow(() -> new UsernameNotFoundException(loginId + ExceptionCode.MEMBER_NOT_FOUND));
 
-        return new ForiMemberDetails(findMember);
+        return new FooriMemberDetails(findMember);
     }
 
-    public final class ForiMemberDetails extends Member implements UserDetails {
+    public final class FooriMemberDetails extends Member implements UserDetails {
 
-        ForiMemberDetails(Member member) {
+        FooriMemberDetails(Member member) {
             setMemberId(member.getMemberId());
             setLoginId(member.getLoginId());
             setPassword(member.getPassword());
             setBirth(member.getBirth());
             setPhoneNum(member.getPhoneNum());
             setEmail(member.getEmail());
-//            setProfileImgPath(member.getProfileImgPath());
             setRoles(member.getRoles());  // 2. loadUserByUsername 메서드로 찾은 유저에게 권한 정보 전달
         }
 

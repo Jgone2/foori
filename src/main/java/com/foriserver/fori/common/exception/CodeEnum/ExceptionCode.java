@@ -1,4 +1,4 @@
-package com.foriserver.fori.common.exception;
+package com.foriserver.fori.common.exception.CodeEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
