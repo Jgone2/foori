@@ -1,6 +1,6 @@
 package com.foriserver.fori.security.auth.service;
 
-import com.foriserver.fori.common.exception.ExceptionCode;
+import com.foriserver.fori.common.exception.CodeEnum.ExceptionCode;
 import com.foriserver.fori.member.entity.Member;
 import com.foriserver.fori.member.repository.MemberRepository;
 import com.foriserver.fori.security.utils.CustomAuthorityUtils;
