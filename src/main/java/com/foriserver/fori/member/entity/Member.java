@@ -1,7 +1,10 @@
 package com.foriserver.fori.member.entity;
 
+import com.foriserver.fori.member.roles.MemberRoles;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -36,6 +39,10 @@ public class Member {
     private String email;
     @Column(nullable = false, unique = true, updatable = true, length = 13)
     private String phoneNum;
+
+    @ElementCollection(fetch = FetchType.EAGER) // 즉시 로딩, 권한 테이블 생성
+    @Enumerated(EnumType.STRING)
+    private List<MemberRoles> roles = List.of(MemberRoles.MEMBER);
 
     /**
      * 이미지(프로필 이미지)

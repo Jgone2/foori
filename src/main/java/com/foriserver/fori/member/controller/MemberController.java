@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public class MemberController {
 
     // 회원 가입
     @PostMapping("/signup")
-    public ResponseEntity postMember(@Valid @RequestBody MemberDto.Post memberPostDto) {
+    public ResponseEntity postMember(@RequestBody @Valid MemberDto.Post memberPostDto) {
 
         Member member = mapper.memberPostDtoToMember(memberPostDto);
         memberService.createMember(member);
@@ -33,23 +34,22 @@ public class MemberController {
     }
 
     // 회원조회(로그인아이디)
-    @GetMapping("/{member-login-id}")
-    public ResponseEntity getMember(@PathVariable("member-login-id") String loginId) {
+    @GetMapping("/info")
+    public ResponseEntity getMember(@AuthenticationPrincipal String loginId) {
 
         Member findMember = memberService.findMemberByLoginId(loginId);
 
 
         return ResponseEntity.ok(mapper.memberToMemberPostResponseDto(findMember));
     }
-
     // 회원조회(이메일)
 
     // 회원 전체조회가 언제필요할까?
     // 팔로우 팔로워 기능 추가할때(검색) -> 추후 구현
 
     // 회원정보 수정
-    @PatchMapping("/{member-login-id}")
-    public ResponseEntity patchMember(@PathVariable("member-login-id") String loginId,
+    @PatchMapping("/mypage/update")
+    public ResponseEntity patchMember(@AuthenticationPrincipal String loginId,
                                       @Valid @RequestBody MemberDto.Patch memberPatchDto) {
 
         Member findMember = memberService.findMemberByLoginId(loginId);
@@ -62,8 +62,8 @@ public class MemberController {
 
 
     // 회원탈퇴
-    @DeleteMapping("/{member-login-id}")
-    public ResponseEntity<?> deleteMember(@PathVariable("member-login-id") String loginId,
+    @DeleteMapping("/mypage/delete")
+    public ResponseEntity<?> deleteMember(@AuthenticationPrincipal String loginId,
                                           @Valid  @RequestBody MemberDto.CheckPassword checkPasswordDto) {
 
         Member findMember = memberService.findMemberByLoginId(loginId);
