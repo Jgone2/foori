@@ -4,6 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foriserver.fori.member.dto.MemberDto;
 import com.foriserver.fori.member.entity.Member;
 import com.foriserver.fori.security.provider.JwtTokenizer;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,8 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +29,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     // 인증 시도 로직
     @SneakyThrows
+    @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
 
         ObjectMapper objectMapper = new ObjectMapper(); // 전달받은 인증 정보 역직렬화 위한 ObjectMapper 인스턴스 생성
@@ -43,23 +47,28 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     // 인증 성공할 경우
+    @Override
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response,
-                                            javax.servlet.FilterChain chain,
-                                            Authentication authResult) {
+                                            FilterChain chain,
+                                            Authentication authResult) throws ServletException, IOException, ServletException {
 
+        // 1. 인증 성공 시, Authentication 객체에서 회원 정보를 받아옴
         Member member = (Member) authResult.getPrincipal();
 
+        // 2. 회원 정보를 통해 JWT 토큰(Access, refresh) 생성
         String accessToken = delegateAccessToken(member);
         String refreshToken = delegateRefreshToken(member);
 
-        response.setHeader("Authorization, Bearer", accessToken);
+        response.setHeader("Authorization", "Bearer " + accessToken);
         response.setHeader("Refresh", refreshToken);
 
 //        // 1. 인증 성공 시, JWT 토큰 생성
 //        String token = jwtTokenizer.createToken(authResult);
 //        // 2. JWT 토큰을 response header에 저장
 //        response.addHeader("Authorization", "Bearer " + token);
+
+        this.getSuccessHandler().onAuthenticationSuccess(request, response, chain, authResult);
     }
 
     private String delegateAccessToken(Member member) {
