@@ -69,8 +69,7 @@ dependencies {
 	implementation 'javax.validation:validation-api:2.0.1.Final'
 
 	// servlet
-	implementation 'javax.servlet:javax.servlet-api:4.0.1'
-
+	implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
 }
 
 tasks.named('test') {
