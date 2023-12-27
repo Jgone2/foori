@@ -1,6 +1,6 @@
 package com.foriserver.fori.member.service;
 
-import com.foriserver.fori.common.exception.ExceptionCode;
+import com.foriserver.fori.common.exception.CodeEnum.ExceptionCode;
 import com.foriserver.fori.member.entity.Member;
 import com.foriserver.fori.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

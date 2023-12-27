@@ -2,6 +2,7 @@ package com.foriserver.fori.member.dto;
 
 import com.foriserver.fori.common.pattern.custom.member.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +11,9 @@ import java.time.LocalDateTime;
 public class MemberDto {
 
     @Getter
+    @Builder
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Login {
 
         @LoginId
