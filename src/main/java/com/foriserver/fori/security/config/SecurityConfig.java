@@ -1,9 +1,10 @@
 package com.foriserver.fori.security.config;
 
 import com.foriserver.fori.security.filter.JwtAuthenticationFilter;
-//import com.foriserver.fori.security.handler.MemberAuthenticationFailureHandler;
+import com.foriserver.fori.security.handler.MemberAuthenticationFailureHandler;
 import com.foriserver.fori.security.handler.MemberAuthenticationSuccessHandler;
 import com.foriserver.fori.security.provider.JwtTokenizer;
+import com.foriserver.fori.security.utils.CustomAuthorityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -17,8 +18,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
-
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -28,6 +27,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     private final JwtTokenizer jwtTokenizer;
+    private final CustomAuthorityUtils authorityUtils;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -67,13 +67,13 @@ public class SecurityConfig {
 
         @Override
         public void configure(HttpSecurity builder) throws Exception {
+            // AuthenticationManager 를 통해 인증처리를 하기 위해 JwtAuthenticationFilter 를 등록
             AuthenticationManager authenticationManager = getBuilder().getSharedObject(AuthenticationManager.class);
 
             JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer);
             jwtAuthenticationFilter.setFilterProcessesUrl("/login");
             jwtAuthenticationFilter.setAuthenticationSuccessHandler(new MemberAuthenticationSuccessHandler());
-//            jwtAuthenticationFilter.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler());
-
+            jwtAuthenticationFilter.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler());
             builder.addFilter(jwtAuthenticationFilter);
         }
     }
