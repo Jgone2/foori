@@ -70,6 +70,18 @@ dependencies {
 
 	// servlet
 	implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
+
+	// selenium
+	implementation 'org.seleniumhq.selenium:selenium-java:4.7.1'
+	implementation 'org.seleniumhq.selenium:selenium-chrome-driver:4.7.1'
+	testImplementation('org.seleniumhq.selenium:selenium-jupiter:4.7.1') {
+		exclude group: 'org.seleniumhq.selenium', module: 'selenium-java'
+		exclude group: 'org.seleniumhq.selenium', module: 'selenium-chrome-driver'
+	}
+
+	// webDriverManager
+	implementation 'io.github.bonigarcia:webdrivermanager:5.0.3'
+	testImplementation 'io.github.bonigarcia:webdrivermanager:5.3.0'
 }
 
 tasks.named('test') {
