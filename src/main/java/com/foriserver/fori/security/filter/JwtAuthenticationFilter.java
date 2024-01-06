@@ -38,11 +38,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // 인증 정보를 포함한 UsernamePasswordAuthenticationToken 토큰 생성 (데이터 -> 유저네임패스워드토큰에 할당)
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getLoginId(), loginDto.getPassword());
-        // 1. request에서 로그인 정보를 받아옴
-        // 2. 로그인 정보를 통해 Authentication 객체 생성
-        // 3. AuthenticationManager에게 인증을 요청
-        // 4. 인증 성공 시, Authentication 객체 반환
-        // 5. 인증 실패 시, AuthenticationException 발생
+
         return authenticationManager.authenticate(authenticationToken); // authenticationManager 에게 인증처리 위임
     }
 
@@ -63,14 +59,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setHeader("Authorization", "Bearer " + accessToken);
         response.setHeader("Refresh", refreshToken);
 
-//        // 1. 인증 성공 시, JWT 토큰 생성
-//        String token = jwtTokenizer.createToken(authResult);
-//        // 2. JWT 토큰을 response header에 저장
-//        response.addHeader("Authorization", "Bearer " + token);
-
-        this.getSuccessHandler().onAuthenticationSuccess(request, response, chain, authResult);
+        this.getSuccessHandler().onAuthenticationSuccess(request, response, authResult);
     }
 
+    // Access Token 생성
     private String delegateAccessToken(Member member) {
 
         Map<String, Object> claims = new HashMap<>();
@@ -86,6 +78,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         return accessToken;
     }
 
+    // Refresh Token 생성
     private String delegateRefreshToken(Member member) {
 
         String subject = member.getLoginId();
@@ -93,6 +86,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
         String refreshToken = jwtTokenizer.generateRefreshToken(subject, tokenExpiration, base64EncodedSecretKey);
+
+
 
         return refreshToken;
     }
