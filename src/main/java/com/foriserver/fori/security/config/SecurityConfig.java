@@ -1,6 +1,9 @@
 package com.foriserver.fori.security.config;
 
 import com.foriserver.fori.security.filter.JwtAuthenticationFilter;
+import com.foriserver.fori.security.filter.JwtVerificationFilter;
+import com.foriserver.fori.security.handler.MemberAccessDeniedHandler;
+import com.foriserver.fori.security.handler.MemberAuthenticationEntryPoint;
 import com.foriserver.fori.security.handler.MemberAuthenticationFailureHandler;
 import com.foriserver.fori.security.handler.MemberAuthenticationSuccessHandler;
 import com.foriserver.fori.security.provider.JwtTokenizer;
@@ -13,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -22,7 +26,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @RequiredArgsConstructor
-@Slf4j
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -35,8 +38,14 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .cors(withDefaults())   // corsConfigurationSource라는 빈을 찾아서 등록해줌
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션을 사용하지 않음 (JWT 사용)
+                .and()
                 .formLogin().disable()
                 .httpBasic().disable()
+                .exceptionHandling()
+                .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
+                .accessDeniedHandler(new MemberAccessDeniedHandler())
+                .and()
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize ->
@@ -56,6 +65,8 @@ public class SecurityConfig {
         corsConfiguration.addAllowedOriginPattern("https://localhost:3000");
         corsConfiguration.addAllowedOriginPattern("https://localhost:5173");
         corsConfiguration.addAllowedMethod("*");
+        corsConfiguration.addExposedHeader("Authorization");
+        corsConfiguration.addExposedHeader("Refresh");
 
         source.registerCorsConfiguration("/**", corsConfiguration); // 앞서 설정한 url에 대해 전체 허용
         return source;
@@ -71,10 +82,15 @@ public class SecurityConfig {
             AuthenticationManager authenticationManager = getBuilder().getSharedObject(AuthenticationManager.class);
 
             JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer);
-            jwtAuthenticationFilter.setFilterProcessesUrl("/login");
+            jwtAuthenticationFilter.setFilterProcessesUrl("/login");    // 로그인 url 지정
             jwtAuthenticationFilter.setAuthenticationSuccessHandler(new MemberAuthenticationSuccessHandler());
             jwtAuthenticationFilter.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler());
-            builder.addFilter(jwtAuthenticationFilter);
+
+            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils);
+
+            builder
+                    .addFilter(jwtAuthenticationFilter)
+                    .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
         }
     }
 }
