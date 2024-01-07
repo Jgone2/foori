@@ -22,5 +22,5 @@ public @interface FilePath {
     Class[] payload() default {};
 
     int minLength() default 1; // 파일경로 최소길이
-    int maxLength() default 500; // 파일경로 최대길이
+    int maxLength() default 250; // 파일경로 최대길이
 }
