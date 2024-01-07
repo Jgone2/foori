@@ -23,5 +23,5 @@ public @interface FileName {
     Class[] payload() default {};
 
     int minLength() default 1; // 파일명 최소길이
-    int maxLength() default 100; // 파일명 최대길이
+    int maxLength() default 60; // 파일명 최대길이
 }
