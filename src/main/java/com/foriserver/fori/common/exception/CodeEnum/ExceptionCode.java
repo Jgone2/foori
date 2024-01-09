@@ -21,7 +21,11 @@ public enum ExceptionCode {
     // Login
     BAD_CREDENTIALS(401, 10301, "아이디 또는 비밀번호가 일치하지 않습니다."),
     AUTHENTICATION_CREDENTIALS_NOT_FOUND(401, 10302, "인증 정보가 없습니다."),
-    UNKNOWN_LOGIN_FAIL(401, 10302, "알 수 없는 로그인 오류입니다.");
+    UNKNOWN_LOGIN_FAIL(401, 10302, "알 수 없는 로그인 오류입니다."),
+
+    // Image
+    FILE_NAME_GENERATE_FAIL(500, 10401, "파일 이름 생성에 실패하였습니다."),
+    FILE_UPLOAD_FAIL(500, 10402, "파일 업로드에 실패하였습니다.");
 
     private final int status;
     private final int customCode;
