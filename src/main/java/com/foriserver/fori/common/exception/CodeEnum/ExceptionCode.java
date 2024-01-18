@@ -25,7 +25,8 @@ public enum ExceptionCode {
 
     // Image
     FILE_NAME_GENERATE_FAIL(500, 10401, "파일 이름 생성에 실패하였습니다."),
-    FILE_UPLOAD_FAIL(500, 10402, "파일 업로드에 실패하였습니다.");
+    FILE_UPLOAD_FAIL(500, 10402, "파일 업로드에 실패하였습니다."),
+    IMAGE_NOT_FOUND(404, 10403, "이미지 파일을 찾을 수 없습니다.");
 
     private final int status;
     private final int customCode;
