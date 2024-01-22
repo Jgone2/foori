@@ -14,7 +14,10 @@ public enum MemberRoles {
     STORE_ADMIN("ROLE_STORE_ADMIN"),
 
     // 일반 회원 권한
-    MEMBER("ROLE_MEMBER");
+    MEMBER("ROLE_MEMBER"),
+
+    // 소셜 회원 권한(OAuth2)
+    SOCIAL_MEMBER("ROLE_SOCIAL_MEMBER");
 
     private String memberRole;
 }
