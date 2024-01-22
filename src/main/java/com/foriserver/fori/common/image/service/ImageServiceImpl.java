@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
 
-    private final S3ServiceImpl s3Service;
+//    private final S3ServiceImpl s3Service;
     private final ImageRepository imageRepository;
     @Override
     public Image findImage(String imageFilePath) {
