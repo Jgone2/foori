@@ -1,11 +1,14 @@
 package com.foriserver.fori.security.config;
 
+import com.foriserver.fori.member.repository.MemberRepository;
+import com.foriserver.fori.member.service.MemberService;
 import com.foriserver.fori.security.filter.JwtAuthenticationFilter;
 import com.foriserver.fori.security.filter.JwtVerificationFilter;
 import com.foriserver.fori.security.handler.MemberAccessDeniedHandler;
 import com.foriserver.fori.security.handler.MemberAuthenticationEntryPoint;
 import com.foriserver.fori.security.handler.MemberAuthenticationFailureHandler;
 import com.foriserver.fori.security.handler.MemberAuthenticationSuccessHandler;
+import com.foriserver.fori.security.oauth2.handler.OAuth2MemberAuthenticationSuccessHandler;
 import com.foriserver.fori.security.provider.JwtTokenizer;
 import com.foriserver.fori.security.utils.CustomAuthorityUtils;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -31,6 +35,8 @@ public class SecurityConfig {
 
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils authorityUtils;
+    private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -51,7 +57,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize ->
                         authorize.anyRequest().permitAll()
                 )
-                .oauth2Login(withDefaults());
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(new OAuth2MemberAuthenticationSuccessHandler(jwtTokenizer, authorityUtils, memberService, memberRepository)));
 
         return http.build();
     }
@@ -92,6 +99,8 @@ public class SecurityConfig {
             builder
                     .addFilter(jwtAuthenticationFilter)
                     .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
+
+            builder.addFilterAfter(jwtVerificationFilter, OAuth2LoginAuthenticationFilter.class);
         }
     }
 }
