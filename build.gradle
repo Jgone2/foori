@@ -57,7 +57,7 @@ dependencies {
 
 	// Gson & mail
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
-	implementation 'com.google.code.gson:gson'
+	implementation 'com.google.code.gson:gson:2.10.1'
 
 	// aws3
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
@@ -70,6 +70,9 @@ dependencies {
 
 	// servlet
 	implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
+
+	// jakarta
+	implementation 'jakarta.persistence:jakarta.persistence-api:3.1.0'
 }
 
 tasks.named('test') {
