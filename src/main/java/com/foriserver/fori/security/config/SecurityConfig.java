@@ -12,7 +12,6 @@ import com.foriserver.fori.security.oauth2.handler.OAuth2MemberAuthenticationSuc
 import com.foriserver.fori.security.provider.JwtTokenizer;
 import com.foriserver.fori.security.utils.CustomAuthorityUtils;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

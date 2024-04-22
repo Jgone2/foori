@@ -19,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import static com.amazonaws.HttpMethod.GET;
 
@@ -88,7 +89,7 @@ public class S3ServiceImpl implements S3Service {
 
     private void putObject(MultipartFile multipartFile, String fileName, ObjectMetadata metadata) {
         try {
-            // S3에 팡리 업로드. 파일의 내용, 이름, 메타데이터를 전달
+            // S3에 파일내 업로드. 파일의 내용, 이름, 메타데이터를 전달
             amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));    // PublicRead 권한으로 업로드
         } catch (Exception e) {
@@ -111,18 +112,29 @@ public class S3ServiceImpl implements S3Service {
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         String createdTime = now.format(timeFormatter);
 
-        String originalFilename = multipartFile.getOriginalFilename();
+        // UUID값 앞자리 8자리 생성(파일명 중복방지 차원)
+        String shortHashUuid = getShortHashUUID();
+
+        StringBuilder fileNameBuilder = new StringBuilder();
+        String originalFileName = multipartFile.getOriginalFilename();
+        fileNameBuilder.append(dirName).append("/");
+
         try {
-            if (originalFilename != null) {
-                originalFilename += createdTime;
+            if (originalFileName != null) {
+                fileNameBuilder.append(createdTime).append("_").append(originalFileName).append("_").append(shortHashUuid);
             }
         } catch (Exception e) {
             log.error("파일 이름 생성 실패", e);
             throw new RuntimeException(ExceptionCode.FILE_NAME_GENERATE_FAIL.getMessage(), e);
         }
 
-        String fileName = dirName + "/" + originalFilename;
+        String fileName = fileNameBuilder.toString();    // 파일 이름 반환
         log.info("파일 이름: {}", fileName);
         return fileName;
+    }
+
+    private static String getShortHashUUID() {
+        UUID uuid = UUID.randomUUID();
+        return new StringBuilder(uuid.toString()).substring(0, 8);
     }
 }

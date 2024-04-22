@@ -1,17 +1,19 @@
 package com.foriserver.fori.member.service;
 
 import com.foriserver.fori.common.exception.CodeEnum.ExceptionCode;
+import com.foriserver.fori.common.s3.service.S3Service;
 import com.foriserver.fori.member.entity.Member;
 import com.foriserver.fori.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.*;
+import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @Slf4j
@@ -21,6 +23,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final S3Service s3Service;
 
     // 회원 생성
     @Override
@@ -34,6 +37,10 @@ public class MemberServiceImpl implements MemberService {
         // 비밀번호 암호화
         String encryptedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encryptedPassword);
+
+        // 랜덤 프로필 이미지
+        String randomProfileImagePath = createRandomProfileImage(member);
+        member.setProfileImgPath(randomProfileImagePath);
 
         Member savedMember = memberRepository.save(member);
 
@@ -113,7 +120,45 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.delete(member);
     }
 
+    //  회원 랜덤 프로필 이미지 생성
+    public String createRandomProfileImage(Member member) {
+        String name = member.getName();
+        String imagePath = generateProfileImageUrl(name, 5);
+        return imagePath; // 프로필 이미지 경로 반환
+    }
 
+    // 랜덤 프로필 이미지를 위한 URL 생성
+    private String generateProfileImageUrl(String name, int colorCount) {
+        String[] colors = generateRandomColors(colorCount);
+        StringBuilder urlBuilder = new StringBuilder("https://source.boringavatars.com/beam/100/");
+        urlBuilder.append(name).append("?colors=");
+        for (int i = 0; i < colors.length; i++) {
+            if (i > 0) {
+                urlBuilder.append(",");
+            }
+            urlBuilder.append(colors[i]);
+        }
+        System.out.println("urlBuilder = " + urlBuilder.toString());
+        return urlBuilder.toString();
+    }
+
+    // 랜덤색상 5개 생성
+    private String[] generateRandomColors(int count) {
+        String[] colors = new String[count];
+        for (int i = 0; i < count; i++) {
+            Color color = generateRandomColor();
+            colors[i] = String.format("%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+        }
+        return colors;
+    }
+
+    private Color generateRandomColor() {
+        Random random = new Random();
+        int red = random.nextInt(256);
+        int green = random.nextInt(256);
+        int blue = random.nextInt(256);
+        return new Color(red, green, blue);
+    }
 
     // Verify
     private void verifyExistsLoginId(String loginId) {

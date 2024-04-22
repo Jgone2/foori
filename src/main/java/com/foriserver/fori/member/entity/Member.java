@@ -47,6 +47,11 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private List<MemberRoles> roles = List.of(MemberRoles.MEMBER);
 
+    @Column(nullable = true, unique = false, updatable = true)
+    private String profileImgPath;
+
+
+
     // OAuth2.0
     public Member(String email, String loginId, String name, String password, String provider) {
         this.email = email;
