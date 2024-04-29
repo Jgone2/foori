@@ -3,7 +3,6 @@ package com.foriserver.fori.common.image.service;
 import com.foriserver.fori.common.exception.CodeEnum.ExceptionCode;
 import com.foriserver.fori.common.image.entity.Image;
 import com.foriserver.fori.common.image.repository.ImageRepository;
-import com.foriserver.fori.common.s3.service.S3ServiceImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
 
-    private final S3ServiceImpl s3Service;
+//    private final S3ServiceImpl s3Service;
     private final ImageRepository imageRepository;
     @Override
     public Image findImage(String imageFilePath) {

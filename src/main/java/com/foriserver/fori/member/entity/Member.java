@@ -1,6 +1,7 @@
 package com.foriserver.fori.member.entity;
 
 import com.foriserver.fori.member.roles.MemberRoles;
+import com.foriserver.fori.member.roles.Provider;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -39,10 +40,30 @@ public class Member {
     private String email;
     @Column(nullable = false, unique = true, updatable = true, length = 13)
     private String phoneNum;
+    @Column(nullable = false, unique = false, updatable = false, length = 6)    // 추후 소셜 로그인 확장을 위해
+    private Provider provider;
 
     @ElementCollection(fetch = FetchType.EAGER) // 즉시 로딩, 권한 테이블 생성
     @Enumerated(EnumType.STRING)
     private List<MemberRoles> roles = List.of(MemberRoles.MEMBER);
+
+    @Column(nullable = true, unique = false, updatable = true)
+    private String profileImgPath;
+
+
+
+    // OAuth2.0
+    public Member(String email, String loginId, String name, String password, String provider) {
+        this.email = email;
+        this.loginId = loginId;
+        this.name = name;
+        this.password = password;
+
+        switch (provider) {
+            case "kakao" -> this.provider = Provider.KAKAO;
+            default -> this.provider = null;
+        }
+    }
 
     /**
      * 이미지(프로필 이미지)

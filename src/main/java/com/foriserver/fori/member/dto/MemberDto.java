@@ -52,6 +52,7 @@ public class MemberDto {
         private String email;
         @PhoneNum
         private String phoneNum;
+        private String profileImgPath;
     }
 
     @Getter
@@ -78,6 +79,7 @@ public class MemberDto {
         private String email;
         @PhoneNum
         private String phoneNum;
+        private String profileImgPath;
     }
     @Getter
     @NoArgsConstructor
@@ -85,8 +87,8 @@ public class MemberDto {
     public static class MemberPostResponse extends MemberResponse {
         private LocalDateTime createdAt;
 
-        public MemberPostResponse(Long memberId, String name, String loginId, String password, int birth, String email, String phoneNum, LocalDateTime createdAt) {
-            super(memberId, name, loginId, password, birth, email, phoneNum);
+        public MemberPostResponse(Long memberId, String name, String loginId, String password, int birth, String email, String phoneNum, String profileImgPath, LocalDateTime createdAt) {
+            super(memberId, name, loginId, password, birth, email, phoneNum, profileImgPath);
             this.createdAt = createdAt;
         }
     }
@@ -97,8 +99,8 @@ public class MemberDto {
     public static class MemberPatchResponse extends MemberResponse {
         private LocalDateTime modifiedAt;
 
-        public MemberPatchResponse(Long memberId, String name, String loginId, String password, int birth, String email, String phoneNum, LocalDateTime modifiedAt) {
-            super(memberId, name, loginId, password, birth, email, phoneNum);
+        public MemberPatchResponse(Long memberId, String name, String loginId, String password, int birth, String email, String phoneNum, String profileImgPath, LocalDateTime modifiedAt) {
+            super(memberId, name, loginId, password, birth, email, phoneNum, profileImgPath);
             this.modifiedAt = modifiedAt;
         }
     }
