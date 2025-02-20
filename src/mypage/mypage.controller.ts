@@ -17,7 +17,7 @@ export class MypageController {
     private readonly userService: UsersService,
   ) {}
 
-  @Get('my-stats/:year/:month')
+  @Get('my-stats/:fromDate/:toDate')
   @UseGuards(AccessTokenGuard)
   async getMyMonthlyStats(
     @User('email') userEmail: string,
