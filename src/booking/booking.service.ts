@@ -539,6 +539,7 @@ export class BookingService {
       .select([
         'r.category AS category',
         'COUNT(b.id) AS categoryCount', // 카테고리별 예약 횟수 (이번 달)
+        'SUM(b.total_price) AS categorySumPrice', // 카테고리별 총 소비액 (이번 달)
         '(SELECT SUM(b2.total_price) FROM bookings b2 WHERE b2.user_id = :userId) AS sumPrice', // 총 소비액
         '(SELECT SUM(b2.total_price) FROM bookings b2 WHERE b2.user_id = :userId AND b2.booking_date BETWEEN :lastMonthStartDate AND :lastMonthEndDate) AS beforeSumPrice', // 지난달 총 소비액
         '(SELECT AVG(b2.total_price) FROM bookings b2 WHERE b2.user_id = :userId) AS myAvgPrice', // 평균 소비액
