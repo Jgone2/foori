@@ -61,14 +61,14 @@ export class UsersEntity extends BaseModel {
   @Column({
     name: 'profile_image_uri',
     type: 'varchar',
-    length: 500,
+    length: 1000,
   })
   profileImageUri: string;
 
   @Column({
     name: 'profile_image_key',
     type: 'varchar',
-    length: 200,
+    length: 500,
     nullable: true,
   })
   profileImageKey: string;
