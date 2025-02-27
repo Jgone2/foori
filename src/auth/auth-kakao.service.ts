@@ -21,6 +21,19 @@ export class AuthKakaoService {
   ) {}
 
   /**
+   * 카카오 연동을 위해 RedirectUrl 분리
+   */
+  async getKakaoLoginUrltoConnect() {
+    const clientId = this.configService.get<string>('KAKAO_CLIENT_ID');
+    const clientSecret = this.configService.get<string>(
+      'KAKAO_CLIENT_SECRET_KEY',
+    );
+    const redirectUri = this.configService.get<string>('KAKAO_REDIRECT_URI');
+
+    return `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&client_secret=${clientSecret}`;
+  }
+
+  /**
    * 카카오 로그인 URL을 가져오는 함수
    */
   async getKakaoLoginUrl() {
@@ -28,7 +41,9 @@ export class AuthKakaoService {
     const clientSecret = this.configService.get<string>(
       'KAKAO_CLIENT_SECRET_KEY',
     );
-    const redirectUri = this.configService.get<string>('KAKAO_REDIRECT_URI');
+    const redirectUri = this.configService.get<string>(
+      'KAKAO_LOGIN_REDIRECT_URI',
+    );
 
     return `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&client_secret=${clientSecret}`;
   }
