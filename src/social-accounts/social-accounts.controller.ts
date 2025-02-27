@@ -49,6 +49,7 @@ export class SocialAccountsController {
   @UseGuards(AccessTokenGuard)
   async kakaoConnectCallback(
     @Query('code') code: string,
+    @Query('accessToken') accessToken: string,
     @User('id') userId: number,
     @Res() res: Response,
   ) {
